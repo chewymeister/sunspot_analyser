@@ -1,6 +1,6 @@
 require 'sinatra/base'
 
-class sunspot_analyser_app < Sinatra::Base
+class SunspotAnalyserApp < Sinatra::Base
   get '/' do
     'Hello sunspot_analyser_app!'
   end

@@ -1,4 +1,4 @@
 require 'rubygems'
-require File.join(File.dirname(__FILE__), 'app/sunspot_analyser.rb')
+require File.join(File.dirname(__FILE__), 'app/sunspot_analyser_app.rb')
 
-run sunspot_analyser_app
+run SunspotAnalyserApp
