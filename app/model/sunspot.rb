@@ -1,6 +1,7 @@
 class Sunspot
   attr_reader :coords
   attr_reader :value
+  attr_reader :neighbours
 
   def initialize value, coords
     @value = value

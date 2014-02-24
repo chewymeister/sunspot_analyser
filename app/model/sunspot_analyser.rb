@@ -2,8 +2,6 @@ require_relative './sunspot'
 require_relative './locator'
 
 class SunspotAnalyser
-  attr_reader :delimiter
-
   def initialize(input)
     @input = input
     @data = extract_data_from(input)
@@ -21,7 +19,7 @@ class SunspotAnalyser
     @input[1].to_i
   end
 
-  def output_quantity
+  def number_of_outputs
     @input[0].to_i
   end
 
@@ -34,7 +32,7 @@ class SunspotAnalyser
   end
 
   def desired_results_from(sunspots)
-    sunspots.reverse.slice(0, output_quantity)
+    sunspots.reverse.slice(0, number_of_outputs)
   end
 
   def results
