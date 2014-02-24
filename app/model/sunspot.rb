@@ -1,21 +1,26 @@
 class Sunspot
-  attr_accessor :location
+  attr_reader :coords
   attr_reader :sunspot_value
-  def initialize value
+  def initialize value, coords
     @value = value.to_i
+    @coords = coords
+  end
+
+  def receive(neighbours)
+    #includes itself as its coords is within range specified in analyser
+    @neighbours = extract_values_from(neighbours)
   end
 
   def value
     @value.to_s
   end
 
-  def make_sunspot_value
-    (sum_of_neighbours + @value).to_s
+  def calculate_sunspot_value
+    @sunspot_value = (sum_of_neighbours).to_s
   end
 
-  def receive(neighbours)
-    @neighbours = neighbours.map { |neighbour| neighbour.value.to_i }
-    @sunspot_value = make_sunspot_value
+  def extract_values_from(neighbours)
+    neighbours.map { |neighbour| neighbour.value.to_i }
   end
 
   def sum_of_neighbours
