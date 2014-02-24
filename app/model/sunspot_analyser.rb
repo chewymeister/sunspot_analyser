@@ -4,56 +4,83 @@ class SunspotAnalyser
   attr_reader :delimiter
 
   def initialize(input)
-    @delimiter = input[1]
-    @output_quantity = input[0].to_i
+    @input = input
     @data = extract_data_from(input)
+  end
+
+  def output
+    initialize_sunspots
+    format_results
+  end
+
+  private
+
+  def delimiter
+    @input[1].to_i
+  end
+
+  def output_quantity
+    @input[0].to_i
   end
 
   def extract_data_from(input)
     input[2..-1].chars
   end
 
-  def output
-    initialize_sunspots
-    @sunspots.each { |sunspot| sunspot.calculate_sunspot_value }
-    @results = @sunspots.sort_by { |sunspot| sunspot.sunspot_value.to_i }.reverse.slice(0, @output_quantity)
-    @results.inject([]) { |set, sunspot| set << format_hash_with(sunspot) }
+  def format_results
+    results.inject([]) { |result, sunspot| result << format_output_for(sunspot) }
+  end
+
+  def desired_results_from(sunspots)
+    sunspots.reverse.slice(0, output_quantity)
+  end
+
+  def results
+    desired_results_from(sorted_sunspots)
+  end
+
+  def sorted_sunspots
+    @sunspots.sort_by { |sunspot| sunspot.sunspot_value }
   end
 
   def initialize_sunspots
     @sunspots = []
     @data.each_with_index do |value, index|
-      @sunspots << Sunspot.new(value, coords_from(index))
+      @sunspots << Sunspot.new(value.to_i, coords_from(index))
     end
-    @sunspots.each { |sunspot| sunspot.receive(neighbours_at(sunspot.coords)) }
+    assign_sunspot_neighbours
   end
 
-  def format_hash_with(sunspot)
-    [ sunspot.coords, score: sunspot.sunspot_value.to_s ]
+  def assign_sunspot_neighbours
+    #includes itself as its coords are within range specified
+    @sunspots.each { |sunspot| sunspot.set(neighbours_at(sunspot.coords)) }
+  end
+
+  def format_output_for(sunspot)
+    [ sunspot.coords.values , score: sunspot.sunspot_value.to_s ]
   end
 
   def coords_from(index)
-    [x_coord(index), y_coord(index)]
+    { x: x_coord(index), y: y_coord(index) }
   end
 
   def neighbours_at(coords)
-    result = []
-    @sunspots.each_with_index do |sunspot, index|
-      result << sunspot if in_range(coords, index)
-    end
-    result
+    @sunspots.select { |sunspot| in_range?(coords, sunspot.coords) }
   end
 
-  def in_range(coords, index)
-    ((coords[0] - 1)..(coords[0] + 1)).include?(x_coord(index)) &&
-     ((coords[1] - 1)..(coords[1] + 1)).include?(y_coord(index))
+  def in_range?(coords, candidate_coords)
+    neighbours?(:x, candidate_coords, coords) && neighbours?(:y, candidate_coords, coords)
+  end
+
+  def neighbours?(axis, candidate_coords, coords)
+    ((coords[axis] - 1)..(coords[axis] + 1)).include?(candidate_coords[axis])
   end
 
   def y_coord(index)
-    index.to_i / @delimiter.to_i
+    index / delimiter
   end
 
   def x_coord(index)
-    index.to_i % @delimiter.to_i
+    index % delimiter
   end
 end
