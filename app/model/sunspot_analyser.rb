@@ -1,5 +1,5 @@
 require_relative './sunspot'
-# require_relative './locator'
+require_relative './locator'
 
 class SunspotAnalyser
   attr_reader :delimiter
@@ -56,24 +56,7 @@ class SunspotAnalyser
   def format_output_for(sunspot)
     [ sunspot.coords.values , score: sunspot.sunspot_value.to_s ]
   end
-# ========================================================================================
-  def assign_sunspot_neighbours
-    #includes itself as its coords are within range specified
-    @sunspots.each { |sunspot| sunspot.set(neighbours_at(sunspot.coords)) }
-  end
 
-  def neighbours_at(coords)
-    @sunspots.select { |sunspot| in_range?(coords, sunspot.coords) }
-  end
-
-  def in_range?(coords, candidate_coords)
-    neighbours?(:x, candidate_coords, coords) && neighbours?(:y, candidate_coords, coords)
-  end
-
-  def neighbours?(axis, candidate_coords, coords)
-    ((coords[axis] - 1)..(coords[axis] + 1)).include?(candidate_coords[axis])
-  end
-# ========================================================================================
   def coords_from(index)
     { x: x_coord(index), y: y_coord(index) }
   end
@@ -84,25 +67,5 @@ class SunspotAnalyser
 
   def x_coord(index)
     index % delimiter
-  end
-end
-
-class Locator
-  def assign_sunspot_neighbours(sunspots)
-    #includes itself as its coords are within range specified
-    @sunspots = sunspots
-    @sunspots.each { |sunspot| sunspot.set(neighbours_at(sunspot.coords)) }
-  end
-
-  def neighbours_at(coords)
-    @sunspots.select { |sunspot| in_range?(coords, sunspot.coords) }
-  end
-
-  def in_range?(coords, candidate_coords)
-    neighbours?(:x, candidate_coords, coords) && neighbours?(:y, candidate_coords, coords)
-  end
-
-  def neighbours?(axis, candidate_coords, coords)
-    ((coords[axis] - 1)..(coords[axis] + 1)).include?(candidate_coords[axis])
   end
 end
