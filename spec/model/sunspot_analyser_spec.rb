@@ -1,17 +1,13 @@
 require './spec/spec_helper'
 
 describe SunspotAnalyser do
-  let(:analyser) { SunspotAnalyser.new('342321442034112344') }
+  let(:analyser) { SunspotAnalyser.new('155312041132232430233210243') }
   it "should not be nil" do
     expect(analyser).not_to be_nil
   end
 
   context "output should have two formats" do
     context "should provide the grid delimiters" do
-      it "as 4" do
-        expect(analyser.delimiter).to eq '4'
-      end
-
       it "as 5" do
         analyser = SunspotAnalyser.new('155312041132232430233210243')
         expect(analyser.delimiter).to eq '5'
@@ -22,17 +18,28 @@ describe SunspotAnalyser do
   context "on a grid of 1 x 1" do
     let(:analyser) { SunspotAnalyser.new('111') }
     it "should have output of 1" do
-      expect(analyser.output).to eq [location: [0, 0], score: "1"]
+      expect(analyser.output).to eq([ [ [0, 0], score: "1" ] ])
     end
   end
 
   context "on a grid of 2 x 2" do
     let(:analyser) { SunspotAnalyser.new('222354') }
     it "should have output of 1" do
-      expect(analyser.output).to eq [{ location: [0, 0], score: "14" }, { location: [0, 1], score: "14" }]
+      expect(analyser.output).to eq([ [ [1, 1], score: "14" ], [ [0, 1], score: "14"] ])
     end
   end
 
+  context "on a grid of 2 x 2" do
+    it "should have output of 1" do
+      expect(analyser.output).to eq([ [ [3, 3], score: "26" ] ])
+    end
+  end
 
-  
+  context "on a grid of 2 x 2" do
+    let(:analyser) { SunspotAnalyser.new('342321442034112344') }
+    it "should have output of 1" do
+      expect(analyser.output).to eq([ [ [1, 2], score: "27" ], [ [1, 1], score: "25" ],
+                                        [ [2, 2], score: "23" ] ])
+    end
+  end
 end
