@@ -5,6 +5,6 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
-require './app/model/sunspot_analyser'
-require './app/model/sunspot'
-require './app/model/locator'
+require './model/sunspot_analyser'
+require './model/sunspot'
+require './model/locator'
