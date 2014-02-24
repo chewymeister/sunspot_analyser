@@ -1,4 +1,5 @@
 require_relative './sunspot'
+# require_relative './locator'
 
 class SunspotAnalyser
   attr_reader :delimiter
@@ -6,6 +7,7 @@ class SunspotAnalyser
   def initialize(input)
     @input = input
     @data = extract_data_from(input)
+    @locator = Locator.new
   end
 
   def output
@@ -51,17 +53,13 @@ class SunspotAnalyser
     assign_sunspot_neighbours
   end
 
-  def assign_sunspot_neighbours
-    #includes itself as its coords are within range specified
-    @sunspots.each { |sunspot| sunspot.set(neighbours_at(sunspot.coords)) }
-  end
-
   def format_output_for(sunspot)
     [ sunspot.coords.values , score: sunspot.sunspot_value.to_s ]
   end
-
-  def coords_from(index)
-    { x: x_coord(index), y: y_coord(index) }
+# ========================================================================================
+  def assign_sunspot_neighbours
+    #includes itself as its coords are within range specified
+    @sunspots.each { |sunspot| sunspot.set(neighbours_at(sunspot.coords)) }
   end
 
   def neighbours_at(coords)
@@ -75,6 +73,10 @@ class SunspotAnalyser
   def neighbours?(axis, candidate_coords, coords)
     ((coords[axis] - 1)..(coords[axis] + 1)).include?(candidate_coords[axis])
   end
+# ========================================================================================
+  def coords_from(index)
+    { x: x_coord(index), y: y_coord(index) }
+  end
 
   def y_coord(index)
     index / delimiter
@@ -83,4 +85,7 @@ class SunspotAnalyser
   def x_coord(index)
     index % delimiter
   end
+end
+
+class Locator
 end
